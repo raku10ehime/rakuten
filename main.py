@@ -31,6 +31,8 @@ def musen_api(d, it):
 
     parm = urllib.parse.urlencode(d, encoding="shift-jis")
     r = requests.get("https://www.tele.soumu.go.jp/musen/list", parm)
+    
+    time.sleep(1)
 
     return r.json()
 
@@ -92,5 +94,3 @@ for it in ["J", "I", "A", "B", "D", "C", "E", "F", "G", "H", "O"]:
     df_femto = fetch_cities(femto)
 
     csv_write(df_femto, lastupdate, it, "femto")
-
-    time.sleep(1)
