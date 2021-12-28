@@ -56,11 +56,13 @@ def csv_write(df, date, it, category):
 
     fromPath = pathlib.Path("csv", f"{category}", f"{it}", f"{date}.csv")
     fromPath.parent.mkdir(parents=True, exist_ok=True)
+    
+    if not fromPath.exists():
 
-    df.to_csv(fromPath, encoding="utf_8_sig", index=False)
+        df.to_csv(fromPath, encoding="utf_8_sig", index=False)
 
-    toPath = pathlib.Path("csv", f"{category}", f"{it}_latest.csv")
-    shutil.copy(fromPath, toPath)
+        toPath = pathlib.Path("csv", f"{category}", f"{it}_latest.csv")
+        shutil.copy(fromPath, toPath)
 
 
 for it in ["J", "I", "A", "B", "D", "C", "E", "F", "G", "H", "O"]:
