@@ -2,13 +2,14 @@ import json
 import pathlib
 import re
 import shutil
-import ssl
 import time
-import urllib.parse
-import urllib.request
 
 import pandas as pd
 import requests
+
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0"
+}
 
 rakuten = {
     # 1:免許情報検索  2: 登録情報検索
@@ -32,22 +33,16 @@ def musen_api(d, it):
 
     d["IT"] = it
 
-    parm = urllib.parse.urlencode(d, encoding="shift-jis")
-    url = f"https://www.tele.soumu.go.jp/musen/list?{parm}"
-
-    ctx = ssl.create_default_context()
-    ctx.options |= 0x4  # ssl.OP_LEGACY_SERVER_CONNECT
-
-    with urllib.request.urlopen(url, context=ctx) as res:
-        json_data = json.loads(res.read())
+    r = requests.get("https://www.tele.soumu.go.jp/musen/list", params=d, headers=headers)
+    r.raise_for_status()
 
     time.sleep(1)
 
-    return json_data
+    return r.json()
     
 def fetch_cities(s):
 
-    lst = re.findall("(\S+)\(([0-9,]+)\)", s)
+    lst = re.findall("(\S+)\s*\(([0-9,]+)\)", s)
 
     df0 = pd.DataFrame(lst, columns=["city", "count"])
     df0["count"] = df0["count"].str.strip().str.replace(",", "").astype(int)
