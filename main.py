@@ -49,7 +49,7 @@ def fetch_cities(s):
 
     flag = df0["city"].str.endswith(("都", "道", "府", "県"))
 
-    df0["pref"] = df0["city"].where(flag).fillna(method="ffill")
+    df0["pref"] = df0["city"].where(flag).ffill()
     df1 = df0.reindex(columns=["pref", "city", "count"])
 
     return df1
